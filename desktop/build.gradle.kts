@@ -31,7 +31,7 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "jvm"
+            packageName = "top.ntutn.zmatch"
             packageVersion = "1.0.0"
         }
     }
