@@ -57,3 +57,6 @@ android {
         targetSdkVersion(30)
     }
 }
+dependencies {
+    implementation("androidx.compose.ui:ui-graphics:1.0.0-beta04")
+}
