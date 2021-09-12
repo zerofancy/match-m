@@ -49,11 +49,17 @@ class GameViewModel : IViewModel {
         // +2是为了给周围放上一圈空格子，计算的时候方便
         mahjongArea = Array(rows + 2) {
             Array(cols + 2) {
-                MutableStateFlow(MahjongType(0))
+                MutableStateFlow(MahjongType(
+                    id = 0,
+                    isSelected = false,
+                    isDeleted = true
+                ))
             }
         }
 
         this.selectableItemCount = selectableItemCount
+        this.maxGameTime = maxGameTime
+        this.stepGameTime = stepGameTime
 
         _rows.value = rows
         _cols.value = cols

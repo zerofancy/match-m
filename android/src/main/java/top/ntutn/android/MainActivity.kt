@@ -28,6 +28,7 @@ import top.ntutn.common.AndroidGameViewModel
 import top.ntutn.common.App
 import top.ntutn.common.IViewModel
 import top.ntutn.common.MahjongType
+import top.ntutn.common.ui.GamePage
 import top.ntutn.common.ui.theme.MTT
 import top.ntutn.common.ui.theme.ZMatchTheme
 import java.lang.ref.WeakReference
@@ -53,13 +54,10 @@ class MainActivity : AppCompatActivity() {
     private val handler = MyHandler(this, Looper.getMainLooper())
 
     private val startGame = {
-        gameViewModel.init(N, N, mahjongSize, maxGameTime, stepGameTime)
+        gameViewModel.init(N, N, mahjongSize, maxGameTime, stepGameTime, MahjongAndroid.front.size)
         gameViewModel.start()
     }
 
-    private val selectColorFilter = ColorFilter.colorMatrix(ColorMatrix().apply {
-        setToSaturation(25f)
-    })
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,8 +92,11 @@ class MainActivity : AppCompatActivity() {
 
                 Surface(color = MaterialTheme.colors.background) {
                     GamePage(
-                        time = gameTimeState
-                    )
+                        time = gameTimeState,
+                        gameViewModel
+                    ) {
+                        painterResource(MahjongAndroid.front[it])
+                    }
                 }
             }
         }
@@ -112,6 +113,7 @@ class MainActivity : AppCompatActivity() {
             when (msg.what) {
                 MSG_TIME_TICK -> {
                     weakActivity.get()?.gameViewModel?.timeTick()
+                    weakActivity.get()?.handler?.removeMessages(MSG_TIME_TICK)
                     weakActivity.get()?.handler?.sendEmptyMessageDelayed(MSG_TIME_TICK, 1000L)
                 }
             }
@@ -125,86 +127,5 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-    }
-
-    @Composable
-    fun GamePage(time: Int) {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Column {
-                Spacer(modifier = Modifier.height(48.dp))
-                TimerArea(
-                    time = time
-                )
-            }
-
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp)
-            ) {
-                Board()
-            }
-        }
-    }
-
-    @Composable
-    fun TimerArea(time: Int = 0) {
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = time.toString(),
-            style = MaterialTheme.typography.h2,
-            textAlign = TextAlign.Center,
-            color = if (time > 5) MaterialTheme.colors.primary else MaterialTheme.colors.error
-        )
-    }
-
-    @Composable
-    fun Board() {
-        Column {
-            // 不显示最外圈空白
-            val rows by gameViewModel.rows.collectAsState()
-            val cols by gameViewModel.cols.collectAsState()
-            for (i in 0 until rows) {
-                if (i > 0) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                }
-                Row {
-                    for (j in 0 until cols) {
-                        val itemState by gameViewModel.mahjongArea[i + 1][j + 1].collectAsState()
-                        Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .aspectRatio(1f)
-                                .clickable { gameViewModel.itemClick(i + 1, j + 1) }
-                        ) {
-                            Image(
-                                painter = painterResource(id = itemState.id), // FIXME 这里显示逻辑有问题
-                                contentDescription = null,
-                                colorFilter = if (itemState.isSelected) selectColorFilter else null,
-                                alpha = if (itemState.isDeleted) 0f else 1f
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * 当为LiveData赋值时，更改State的值为传入值
-     * 适配现有区域刷新逻辑
-     */
-    @Composable
-    private fun <R, T> LiveData<T>.observeWithData(data: R): State<R> {
-        val lifecycleOwner = LocalLifecycleOwner.current
-        val state = remember { mutableStateOf(data) }
-        DisposableEffect(this, lifecycleOwner) {
-            val observer = Observer<T> { state.value = data } // 忽略赋值，直接使用data
-            observe(lifecycleOwner, observer)
-            onDispose { removeObserver(observer) }
-        }
-        return state
     }
 }
