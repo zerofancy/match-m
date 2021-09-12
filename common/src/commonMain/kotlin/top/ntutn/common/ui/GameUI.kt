@@ -75,7 +75,7 @@ fun Board(gameViewModel: IViewModel, getPainterById: @Composable (Int) -> Painte
                             .clickable { gameViewModel.itemClick(i + 1, j + 1) }
                     ) {
                         Image(
-                            painter = getPainterById(itemState.id), // FIXME 这里显示逻辑有问题
+                            painter = getPainterById(itemState.id),
                             contentDescription = null,
                             colorFilter = if (itemState.isSelected) selectColorFilter else null,
                             alpha = if (itemState.isDeleted) 0f else 1f

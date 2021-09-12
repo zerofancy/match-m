@@ -58,7 +58,6 @@ class MainActivity : AppCompatActivity() {
         gameViewModel.start()
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
