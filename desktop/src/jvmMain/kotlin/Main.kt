@@ -63,6 +63,7 @@ fun main() = SwingUtilities.invokeLater {
                 // TODO 游戏状态和弹窗 & 时间
                 when (gameState) {
                     IViewModel.GameState.PAUSE -> {
+                        // FIXME 弹窗代码。这里要学了Swing的线程模型才知道怎么写了
 //                        thread {
 //                            val option = JOptionPane.showConfirmDialog(
 //                                null,
