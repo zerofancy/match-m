@@ -4,7 +4,24 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class GameViewModel : IViewModel {
-    override var mahjongArea: Array<Array<MutableStateFlow<MahjongType>>> = arrayOf()
+    override var mahjongArea: Array<Array<MutableStateFlow<MahjongType>>> = arrayOf(
+        arrayOf(
+            MutableStateFlow(
+                MahjongType(id = 0, false, true)
+            ),
+            MutableStateFlow(
+                MahjongType(id = 0, false, true)
+            )
+        ),
+        arrayOf(
+            MutableStateFlow(
+                MahjongType(id = 0, false, true)
+            ),
+            MutableStateFlow(
+                MahjongType(id = 0, false, true)
+            )
+        )
+    )
     private var selectedIndex: Pair<Int, Int>? = null
 
     // 游戏状态
@@ -49,11 +66,13 @@ class GameViewModel : IViewModel {
         // +2是为了给周围放上一圈空格子，计算的时候方便
         mahjongArea = Array(rows + 2) {
             Array(cols + 2) {
-                MutableStateFlow(MahjongType(
-                    id = 0,
-                    isSelected = false,
-                    isDeleted = true
-                ))
+                MutableStateFlow(
+                    MahjongType(
+                        id = 0,
+                        isSelected = false,
+                        isDeleted = true
+                    )
+                )
             }
         }
 

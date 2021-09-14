@@ -17,7 +17,12 @@ import top.ntutn.common.App
 import top.ntutn.common.GameViewModel
 import top.ntutn.common.IViewModel
 import top.ntutn.common.ui.GamePage
+import java.awt.event.ActionEvent
+import java.awt.event.ActionListener
+import javax.swing.JOptionPane
 import javax.swing.SwingUtilities
+import javax.swing.Timer
+import kotlin.concurrent.thread
 
 // 麻将牌是一个N*N的区域，所以N必须是偶数
 private const val N = 10
@@ -56,29 +61,62 @@ fun main() = SwingUtilities.invokeLater {
                 val gameTimeState by gameViewModel.gameTime.collectAsState()
 
                 // TODO 游戏状态和弹窗 & 时间
-//        when (gameState) {
-//            IViewModel.GameState.PAUSE -> MTT.SimpleDialog(
-//                title = "游戏暂停",
-//                content = "是否退出游戏？",
-//                confirmButton = "继续游戏" to { gameViewModel.resume() },
-//                cancelButton = "退出" to { finish() },
-//                onCancel = { /*点击空白区域啥也不做*/ }
-//            )
-//            IViewModel.GameState.SUCCEEDED -> MTT.SimpleDialog(
-//                title = "游戏胜利",
-//                content = "恭喜你取得胜利！",
-//                confirmButton = "再来一把" to startGame,
-//                cancelButton = "退出" to { finish() },
-//                onCancel = {/*点击空白区域啥也不做*/ }
-//            )
-//            IViewModel.GameState.FAILED -> MTT.SimpleDialog(
-//                title = "游戏失败",
-//                content = "很遗憾你输了。",
-//                confirmButton = "再来一把" to startGame,
-//                cancelButton = "退出" to { finish() },
-//                onCancel = {/*点击空白区域啥也不做*/ }
-//            )
-//        }
+                when (gameState) {
+                    IViewModel.GameState.PAUSE -> {
+//                        thread {
+//                            val option = JOptionPane.showConfirmDialog(
+//                                null,
+//                                "是否退出游戏？",
+//                                "游戏暂停",
+//                                JOptionPane.OK_OPTION,
+//                                JOptionPane.QUESTION_MESSAGE
+//                            )
+//                            SwingUtilities.invokeLater {
+//                                if (option == JOptionPane.OK_OPTION) {
+//                                    gameViewModel.resume()
+//                                } else {
+//                                    System.exit(0)
+//                                }
+//                            }
+//                        }.run()
+                    }
+                    IViewModel.GameState.SUCCEEDED -> {
+//                        thread {
+//                            val option = JOptionPane.showConfirmDialog(
+//                                null,
+//                                "你赢了。是否再来一局？",
+//                                "你赢了",
+//                                JOptionPane.OK_OPTION,
+//                                JOptionPane.QUESTION_MESSAGE
+//                            )
+//                            SwingUtilities.invokeLater {
+//                                if (option == JOptionPane.OK_OPTION) {
+//                                    startGame()
+//                                } else {
+//                                    System.exit(0)
+//                                }
+//                            }
+//                        }.run()
+                    }
+                    IViewModel.GameState.FAILED -> {
+//                        thread {
+//                            val option = JOptionPane.showConfirmDialog(
+//                                null,
+//                                "很遗憾你输了。是否再来一局？",
+//                                "你输了",
+//                                JOptionPane.OK_OPTION,
+//                                JOptionPane.QUESTION_MESSAGE
+//                            )
+//                            SwingUtilities.invokeLater {
+//                                if (option == JOptionPane.OK_OPTION) {
+//                                    startGame()
+//                                } else {
+//                                    System.exit(0)
+//                                }
+//                            }
+//                        }.run()
+                    }
+                }
 
                 Surface(color = MaterialTheme.colors.background) {
                     GamePage(
@@ -91,6 +129,11 @@ fun main() = SwingUtilities.invokeLater {
 
                 startGame()
 
+                Timer(1000, object : ActionListener {
+                    override fun actionPerformed(e: ActionEvent?) {
+                        gameViewModel.timeTick()
+                    }
+                }).start()
             }
         }
     }
