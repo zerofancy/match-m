@@ -40,22 +40,22 @@ private const val stepGameTime = 3
 fun main() = SwingUtilities.invokeLater {
     AppWindow().apply {
         setContentSize(600, 1000)
+        val gameViewModel: IViewModel = GameViewModel()
+
+        val startGame = {
+            gameViewModel.init(
+                N,
+                N,
+                mahjongSize,
+                maxGameTime,
+                stepGameTime,
+                MahjongDesktop.front.size
+            )
+            gameViewModel.start()
+        }
 
         show {
             MaterialTheme {
-                val gameViewModel: IViewModel = GameViewModel()
-
-                val startGame = {
-                    gameViewModel.init(
-                        N,
-                        N,
-                        mahjongSize,
-                        maxGameTime,
-                        stepGameTime,
-                        MahjongDesktop.front.size
-                    )
-                    gameViewModel.start()
-                }
 
                 val gameState by gameViewModel.gameState.collectAsState()
                 val gameTimeState by gameViewModel.gameTime.collectAsState()
@@ -100,6 +100,12 @@ fun main() = SwingUtilities.invokeLater {
 //                        }.run()
                     }
                     IViewModel.GameState.FAILED -> {
+                        SwingUtilities.invokeLater {
+                            thread {
+                                Thread.sleep(10000L)
+                            }.start() //FIXME 不能这么写，因为会多次执行
+                        }
+
 //                        thread {
 //                            val option = JOptionPane.showConfirmDialog(
 //                                null,
@@ -127,16 +133,16 @@ fun main() = SwingUtilities.invokeLater {
                         BitmapPainter(imageFromResource("drawable/${MahjongDesktop.all[it]}.png"))
                     }
                 }
-
-                startGame()
-
-                Timer(1000, object : ActionListener {
-                    override fun actionPerformed(e: ActionEvent?) {
-                        gameViewModel.timeTick()
-                    }
-                }).start()
             }
         }
+
+        startGame()
+
+        Timer(1000, object : ActionListener {
+            override fun actionPerformed(e: ActionEvent?) {
+                gameViewModel.timeTick()
+            }
+        }).start()
     }
 }
 
