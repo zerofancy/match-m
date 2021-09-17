@@ -13,10 +13,14 @@ import androidx.compose.ui.graphics.imageFromResource
 import androidx.compose.ui.graphics.painter.BitmapPainter
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import top.ntutn.common.App
 import top.ntutn.common.GameViewModel
 import top.ntutn.common.IViewModel
 import top.ntutn.common.ui.GamePage
+import java.awt.EventQueue
 import java.awt.event.ActionEvent
 import java.awt.event.ActionListener
 import javax.swing.JOptionPane
@@ -35,7 +39,6 @@ private const val maxGameTime = 15
 
 // 每完成一次增加的游戏时间
 private const val stepGameTime = 3
-
 
 fun main() = SwingUtilities.invokeLater {
     AppWindow().apply {
@@ -60,71 +63,6 @@ fun main() = SwingUtilities.invokeLater {
                 val gameState by gameViewModel.gameState.collectAsState()
                 val gameTimeState by gameViewModel.gameTime.collectAsState()
 
-                // TODO 游戏状态和弹窗 & 时间
-                when (gameState) {
-                    IViewModel.GameState.PAUSE -> {
-                        // FIXME 弹窗代码。这里要学了Swing的线程模型才知道怎么写了
-//                        thread {
-//                            val option = JOptionPane.showConfirmDialog(
-//                                null,
-//                                "是否退出游戏？",
-//                                "游戏暂停",
-//                                JOptionPane.OK_OPTION,
-//                                JOptionPane.QUESTION_MESSAGE
-//                            )
-//                            SwingUtilities.invokeLater {
-//                                if (option == JOptionPane.OK_OPTION) {
-//                                    gameViewModel.resume()
-//                                } else {
-//                                    System.exit(0)
-//                                }
-//                            }
-//                        }.run()
-                    }
-                    IViewModel.GameState.SUCCEEDED -> {
-//                        thread {
-//                            val option = JOptionPane.showConfirmDialog(
-//                                null,
-//                                "你赢了。是否再来一局？",
-//                                "你赢了",
-//                                JOptionPane.OK_OPTION,
-//                                JOptionPane.QUESTION_MESSAGE
-//                            )
-//                            SwingUtilities.invokeLater {
-//                                if (option == JOptionPane.OK_OPTION) {
-//                                    startGame()
-//                                } else {
-//                                    System.exit(0)
-//                                }
-//                            }
-//                        }.run()
-                    }
-                    IViewModel.GameState.FAILED -> {
-                        SwingUtilities.invokeLater {
-                            thread {
-                                Thread.sleep(10000L)
-                            }.start() //FIXME 不能这么写，因为会多次执行
-                        }
-
-//                        thread {
-//                            val option = JOptionPane.showConfirmDialog(
-//                                null,
-//                                "很遗憾你输了。是否再来一局？",
-//                                "你输了",
-//                                JOptionPane.OK_OPTION,
-//                                JOptionPane.QUESTION_MESSAGE
-//                            )
-//                            SwingUtilities.invokeLater {
-//                                if (option == JOptionPane.OK_OPTION) {
-//                                    startGame()
-//                                } else {
-//                                    System.exit(0)
-//                                }
-//                            }
-//                        }.run()
-                    }
-                }
-
                 Surface(color = MaterialTheme.colors.background) {
                     GamePage(
                         time = gameTimeState,
@@ -138,12 +76,65 @@ fun main() = SwingUtilities.invokeLater {
 
         startGame()
 
+        GlobalScope.launch {
+            gameViewModel.gameState.collect {
+                println("游戏状态：$it")
+                when (it) {
+                    IViewModel.GameState.SUCCEEDED -> {
+                        EventQueue.invokeLater {
+                            val option = JOptionPane.showConfirmDialog(
+                                null,
+                                "你赢了。是否再来一局？",
+                                "你赢了",
+                                JOptionPane.OK_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                            )
+                            if (option == JOptionPane.OK_OPTION) {
+                                startGame()
+                            } else {
+                                System.exit(0)
+                            }
+                        }
+                    }
+                    IViewModel.GameState.FAILED -> {
+                        val option = JOptionPane.showConfirmDialog(
+                            null,
+                            "很遗憾你输了。是否再来一局？",
+                            "你输了",
+                            JOptionPane.OK_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                        )
+                        if (option == JOptionPane.OK_OPTION) {
+                            startGame()
+                        } else {
+                            close()
+                        }
+                    }
+                    IViewModel.GameState.PAUSE -> {
+                        val option = JOptionPane.showConfirmDialog(
+                            null,
+                            "是否退出游戏？",
+                            "游戏暂停",
+                            JOptionPane.OK_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                        )
+                        if (option == JOptionPane.OK_OPTION) {
+                            gameViewModel.resume()
+                        } else {
+                            close()
+                        }
+                    }
+                }
+            }
+        }
+
         Timer(1000, object : ActionListener {
             override fun actionPerformed(e: ActionEvent?) {
                 gameViewModel.timeTick()
             }
         }).start()
     }
+
 }
 
 private fun AppWindow.setContentSize(width: Int, height: Int) {
