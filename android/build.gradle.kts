@@ -13,15 +13,19 @@ repositories {
 
 dependencies {
     implementation(project(":common"))
-    implementation("androidx.activity:activity-compose:1.3.0-alpha07")
+    implementation("androidx.activity:activity-compose:1.3.1")
 }
 
 android {
-    compileSdkVersion(29)
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    compileSdkVersion(30)
     defaultConfig {
-        applicationId = "top.ntutn.android"
+        applicationId = "top.ntutn.zmatch"
         minSdkVersion(24)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
         versionCode = 1
         versionName = "1.0"
     }

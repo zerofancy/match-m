@@ -4,7 +4,6 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.compose") version "0.4.0"
     id("com.android.library")
-    id("kotlin-android-extensions")
 }
 
 group = "top.ntutn"
@@ -36,8 +35,8 @@ kotlin {
 //        }
         val androidMain by getting {
             dependencies {
-                api("androidx.appcompat:appcompat:1.2.0")
-                api("androidx.core:core-ktx:1.3.1")
+                api("androidx.appcompat:appcompat:1.3.1")
+                api("androidx.core:core-ktx:1.6.0")
             }
         }
 //        val androidTest by getting {
@@ -51,10 +50,13 @@ kotlin {
 }
 
 android {
-    compileSdkVersion(29)
+    compileSdkVersion(30)
     sourceSets["main"].manifest.srcFile("src/androidMain/AndroidManifest.xml")
     defaultConfig {
         minSdkVersion(24)
-        targetSdkVersion(29)
+        targetSdkVersion(30)
     }
+}
+dependencies {
+    implementation("androidx.compose.ui:ui-graphics:1.0.0-beta04")
 }
