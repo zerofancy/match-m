@@ -31,11 +31,19 @@ compose.desktop {
         mainClass = "MainKt"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
-            packageName = "连连看"
             packageVersion = "1.0.0"
 
             macOS {
+                packageName = "连连看"
                 iconFile.set(project.file("icon.icns"))
+            }
+
+            windows {
+                packageName = "zmatch"
+            }
+
+            linux {
+                packageName = "zmatch"
             }
         }
     }
