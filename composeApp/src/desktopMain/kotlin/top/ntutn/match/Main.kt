@@ -14,6 +14,7 @@ import androidx.compose.ui.window.rememberWindowState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
+import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
 import java.awt.EventQueue
 import javax.swing.JOptionPane

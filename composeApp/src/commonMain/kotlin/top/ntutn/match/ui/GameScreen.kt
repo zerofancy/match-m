@@ -1,4 +1,4 @@
-package top.ntutn.match
+package top.ntutn.match.ui
 
 enum class GameScreen {
     MENU,

@@ -29,7 +29,7 @@ private const val stepGameTime = 3
 @Composable
 fun GamePlayingScene(
     modifier: Modifier = Modifier,
-    gameViewModel: GameViewModel = viewModel { GameViewModel() },
+    gameViewModel: IViewModel = viewModel { GameViewModel() },
     exitApplication: () -> Unit = {}
 ) {
     val gameState by gameViewModel.gameState.collectAsState()
