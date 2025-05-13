@@ -5,24 +5,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 class GameViewModel : IViewModel, ViewModel() {
-    override var mahjongArea: Array<Array<MutableStateFlow<MahjongType>>> = arrayOf(
+    private val _mahjongArea = MutableStateFlow(
         arrayOf(
-            MutableStateFlow(
-                MahjongType(id = 0, false, true)
+            arrayOf(
+                MutableStateFlow(
+                    MahjongType(id = 0, false, true)
+                ),
+                MutableStateFlow(
+                    MahjongType(id = 0, false, true)
+                )
             ),
-            MutableStateFlow(
-                MahjongType(id = 0, false, true)
-            )
-        ),
-        arrayOf(
-            MutableStateFlow(
-                MahjongType(id = 0, false, true)
-            ),
-            MutableStateFlow(
-                MahjongType(id = 0, false, true)
+            arrayOf(
+                MutableStateFlow(
+                    MahjongType(id = 0, false, true)
+                ),
+                MutableStateFlow(
+                    MahjongType(id = 0, false, true)
+                )
             )
         )
     )
+    override val mahjongArea: StateFlow<Array<Array<MutableStateFlow<MahjongType>>>> = _mahjongArea
     private var selectedIndex: Pair<Int, Int>? = null
 
     // 游戏状态
@@ -65,7 +68,7 @@ class GameViewModel : IViewModel, ViewModel() {
         require(stepGameTime >= 0) { "stepGameTime参数错误" }
 
         // +2是为了给周围放上一圈空格子，计算的时候方便
-        mahjongArea = Array(rows + 2) {
+        _mahjongArea.value = Array(rows + 2) {
             Array(cols + 2) {
                 MutableStateFlow(
                     MahjongType(
@@ -94,7 +97,7 @@ class GameViewModel : IViewModel, ViewModel() {
         }
         res.shuffle()
         for (i in res.indices) {
-            mahjongArea[i / cols + 1][i % cols + 1].value = res[i]
+            mahjongArea.value[i / cols + 1][i % cols + 1].value = res[i]
         }
         selectedIndex = null
         _gameState.value = IViewModel.GameState.PENDING
@@ -154,18 +157,18 @@ class GameViewModel : IViewModel, ViewModel() {
      * @param col 当前列（1开始）
      */
     override fun itemClick(row: Int, col: Int) {
-        if (mahjongArea[row][col].value.isDeleted) {
+        if (mahjongArea.value[row][col].value.isDeleted) {
             // 当前点击元素已经消除
             return
         }
         if (selectedIndex == null) {
             // 没有已经选中的，选中点击项
-            mahjongArea[row][col].value = mahjongArea[row][col].value.copy(isSelected = true)
+            mahjongArea.value[row][col].value = mahjongArea.value[row][col].value.copy(isSelected = true)
             selectedIndex = row to col
             return
         }
-        val previousSelected = mahjongArea[selectedIndex!!.first][selectedIndex!!.second]
-        val currentSelected = mahjongArea[row][col]
+        val previousSelected = mahjongArea.value[selectedIndex!!.first][selectedIndex!!.second]
+        val currentSelected = mahjongArea.value[row][col]
         // 判断是否可消除
         if (checkIsCanDelete(row to col, selectedIndex!!)) {
             previousSelected.value =
@@ -174,7 +177,7 @@ class GameViewModel : IViewModel, ViewModel() {
             selectedIndex = null
             val gameTime = _gameTime.value + stepGameTime
             _gameTime.value = gameTime.takeIf { it <= maxGameTime } ?: maxGameTime
-            if (mahjongArea.all { it.all { it.value.isDeleted } }) {
+            if (mahjongArea.value.all { it.all { it.value.isDeleted } }) {
                 // 所有麻将已经消除，游戏胜利
                 _gameState.value = IViewModel.GameState.SUCCEEDED
             }
@@ -191,7 +194,7 @@ class GameViewModel : IViewModel, ViewModel() {
         if (itemIndex1 == itemIndex2) {
             return false
         }
-        if (mahjongArea.getByPair(itemIndex1).value.id != mahjongArea.getByPair(itemIndex2).value.id) {
+        if (mahjongArea.value.getByPair(itemIndex1).value.id != mahjongArea.value.getByPair(itemIndex2).value.id) {
             return false
         }
         return VisitDirection.entries.any {
@@ -280,7 +283,7 @@ class GameViewModel : IViewModel, ViewModel() {
      * 判断某个点在游戏区域内，而且是空白格子或目标格子
      */
     private fun Pair<Int, Int>.isPointCanUse(targetPoint: Pair<Int, Int>) =
-        isPointValid() && (mahjongArea.getByPair(this).value.isDeleted || this == targetPoint)
+        isPointValid() && (mahjongArea.value.getByPair(this).value.isDeleted || this == targetPoint)
 
 }
 

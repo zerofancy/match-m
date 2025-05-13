@@ -1,5 +1,6 @@
 package top.ntutn.match
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -106,8 +107,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        super.onBackPressed()
+        //super.onBackPressed()
         gameViewModel.pause()
     }
 

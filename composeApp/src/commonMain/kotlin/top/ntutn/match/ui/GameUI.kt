@@ -67,7 +67,8 @@ fun Board(gameViewModel: IViewModel, getPainterById: @Composable (Int) -> Painte
             }
             Row {
                 for (j in 0 until cols) {
-                    val itemState by gameViewModel.mahjongArea[i + 1][j + 1].collectAsState()
+                    val area by gameViewModel.mahjongArea.collectAsState()
+                    val itemState by area[i + 1][j + 1].collectAsState()
                     Box(
                         modifier = Modifier
                             .weight(1f)

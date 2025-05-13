@@ -32,6 +32,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.appcompat)
+            implementation(libs.androidx.ui.android)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -79,11 +81,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-}
-
-dependencies {
-    implementation(libs.androidx.appcompat)
-    debugImplementation(compose.uiTooling)
 }
 
 compose.desktop {

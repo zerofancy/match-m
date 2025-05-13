@@ -4,7 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 interface IViewModel {
-    var mahjongArea: Array<Array<MutableStateFlow<MahjongType>>>
+    val mahjongArea: StateFlow<Array<Array<MutableStateFlow<MahjongType>>>>
     val gameState: StateFlow<GameState>
     val gameTime: StateFlow<Int>
     val rows: StateFlow<Int>

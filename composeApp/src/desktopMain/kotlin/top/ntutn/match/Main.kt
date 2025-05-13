@@ -1,137 +1,74 @@
 package top.ntutn.match
 
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.painterResource
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
-import androidx.lifecycle.viewmodel.compose.viewModel
-import top.ntutn.match.ui.GamePage
+import top.ntutn.match.ui.AboutScreen
+import top.ntutn.match.ui.MenuScreen
 import java.awt.EventQueue
-import java.awt.event.ActionEvent
-import java.awt.event.ActionListener
 import javax.swing.JOptionPane
-import javax.swing.Timer
-
-// 麻将牌是一个N*N的区域，所以N必须是偶数
-private const val N = 10
-
-// 最多使用的麻将的种类，越多游戏就越难
-private const val mahjongSize = 15
-
-// 最大倒计时时间，单位秒
-private const val maxGameTime = 15
-
-// 每完成一次增加的游戏时间
-private const val stepGameTime = 3
 
 fun main() = application {
     val state = rememberWindowState(size = DpSize(600.dp, 1000.dp))
+    val exitQuery = {
+        requestConfirm(
+            "是否退出游戏？",
+            "连连看",
+            onOk = ::exitApplication
+        )
+    }
     Window(
-        onCloseRequest = ::exitApplication,
+        onCloseRequest = exitQuery,
         title = "连连看小游戏",
         state = state,
     ) {
         MaterialTheme {
-            val gameViewModel = viewModel { GameViewModel() }
+            var currentScreen by remember { mutableStateOf(GameScreen.MENU) }
+            when (currentScreen) {
+                GameScreen.MENU -> MenuScreen(
+                    onStart = {
+                        currentScreen = GameScreen.GAME_PLAYING
+                    },
+                    onAbout = {
+                        currentScreen = GameScreen.ABOUT
+                    },
+                    onExit = exitQuery
+                )
 
-            val gameState by gameViewModel.gameState.collectAsState()
-            val gameTimeState by gameViewModel.gameTime.collectAsState()
-
-            Surface(color = MaterialTheme.colors.background) {
-                GamePage(
-                    time = gameTimeState,
-                    gameViewModel
-                ) {
-                    painterResource("drawable/${MahjongDesktop.all[it]}.png")
+                GameScreen.GAME_PLAYING -> GamePlayingScene(exitApplication = ::exitApplication)
+                GameScreen.ABOUT -> AboutScreen {
+                    currentScreen = GameScreen.MENU
                 }
-            }
-
-            val startGame = remember {
-                {
-                    gameViewModel.init(
-                        N,
-                        N,
-                        mahjongSize,
-                        maxGameTime,
-                        stepGameTime,
-                        MahjongDesktop.front.size
-                    )
-                    gameViewModel.start()
-                }
-            }
-
-            LaunchedEffect(Unit) {
-                gameViewModel.gameState.collect {
-                    println("游戏状态：$it")
-                    when (it) {
-                        IViewModel.GameState.SUCCEEDED -> {
-                            EventQueue.invokeLater {
-                                val option = JOptionPane.showConfirmDialog(
-                                    null,
-                                    "你赢了。是否再来一局？",
-                                    "你赢了",
-                                    JOptionPane.OK_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE
-                                )
-                                if (option == JOptionPane.OK_OPTION) {
-                                    startGame()
-                                } else {
-                                    exitApplication()
-                                }
-                            }
-                        }
-
-                        IViewModel.GameState.FAILED -> {
-                            val option = JOptionPane.showConfirmDialog(
-                                null,
-                                "很遗憾你输了。是否再来一局？",
-                                "你输了",
-                                JOptionPane.OK_OPTION,
-                                JOptionPane.QUESTION_MESSAGE
-                            )
-                            if (option == JOptionPane.OK_OPTION) {
-                                startGame()
-                            } else {
-                                exitApplication()
-                            }
-                        }
-
-                        IViewModel.GameState.PAUSE -> {
-                            val option = JOptionPane.showConfirmDialog(
-                                null,
-                                "是否退出游戏？",
-                                "游戏暂停",
-                                JOptionPane.OK_OPTION,
-                                JOptionPane.QUESTION_MESSAGE
-                            )
-                            if (option == JOptionPane.OK_OPTION) {
-                                gameViewModel.resume()
-                            } else {
-                                exitApplication()
-                            }
-                        }
-
-                        IViewModel.GameState.PENDING -> {}
-                        IViewModel.GameState.RUNNING -> {}
-                    }
-                }
-            }
-            LaunchedEffect(Unit) {
-                Timer(1000, object : ActionListener {
-                    override fun actionPerformed(e: ActionEvent?) {
-                        gameViewModel.timeTick()
-                    }
-                }).start()
-                startGame()
             }
         }
     }
 }
+
+private fun requestConfirm(
+    message: String,
+    title: String,
+    onOk: () -> Unit,
+    onCancel: () -> Unit = {},
+) {
+    EventQueue.invokeLater {
+        val option = JOptionPane.showConfirmDialog(
+            null,
+            message, title,
+            JOptionPane.OK_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+        )
+        if (option == JOptionPane.OK_OPTION) {
+            onOk()
+        } else {
+            onCancel()
+        }
+    }
+}
+
