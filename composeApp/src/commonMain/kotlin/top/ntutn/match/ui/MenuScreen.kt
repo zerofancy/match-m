@@ -18,7 +18,7 @@ fun MenuScreen(
     modifier: Modifier = Modifier.Companion.fillMaxSize(),
     onStart: () -> Unit = {},
     onAbout: () -> Unit = {},
-    onExit: () -> Unit = {}
+    onExit: () -> Unit = {},
 ) {
     Column(modifier = modifier) {
         val modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
