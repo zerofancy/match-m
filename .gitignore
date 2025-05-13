@@ -3,3 +3,5 @@
 local.properties
 /build
 /composeApp/build
+/.kotlin
+/kotlin-js-store/yarn.lock
