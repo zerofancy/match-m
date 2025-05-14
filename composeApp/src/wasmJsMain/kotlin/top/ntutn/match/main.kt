@@ -1,5 +1,7 @@
 package top.ntutn.match
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -9,6 +11,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFontFamilyResolver
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.platform.Font
@@ -41,7 +44,9 @@ fun main() {
             }
 
             if (fontsLoaded) {
-                App()
+                Box(modifier = Modifier.aspectRatio(0.618f)) {
+                    App()
+                }
             } else {
                 Text("Loading Fonts...")
             }
