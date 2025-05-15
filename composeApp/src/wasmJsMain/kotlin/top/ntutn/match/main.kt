@@ -3,7 +3,6 @@ package top.ntutn.match
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,13 +27,14 @@ import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
 import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
+import top.ntutn.match.ui.theme.ZMatchTheme
 import zmatch.composeapp.generated.resources.Res
 import zmatch.composeapp.generated.resources.resource_han_rounded_cn_medium
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalResourceApi::class)
 fun main() {
     ComposeViewport(document.body!!) {
-        MaterialTheme {
+        ZMatchTheme {
             val fontFamilyResolver = LocalFontFamilyResolver.current
             var fontsLoaded by remember { mutableStateOf(false) }
             val environment = rememberResourceEnvironment()

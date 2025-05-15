@@ -1,6 +1,5 @@
 package top.ntutn.match
 
-import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,6 +15,7 @@ import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
 import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
+import top.ntutn.match.ui.theme.ZMatchTheme
 import java.awt.EventQueue
 import javax.swing.JOptionPane
 
@@ -38,7 +38,7 @@ fun main() = application {
         title = "连连看小游戏",
         state = state,
     ) {
-        MaterialTheme {
+        ZMatchTheme {
             var currentScreen by remember { mutableStateOf(GameScreen.MENU) }
             when (currentScreen) {
                 GameScreen.MENU -> MenuScreen(
