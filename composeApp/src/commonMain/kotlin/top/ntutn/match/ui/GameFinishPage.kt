@@ -14,7 +14,7 @@ fun GameFinishPage(win: Boolean, modifier: Modifier = Modifier, onRestart: () ->
             Text("再来一局")
         }
         Button(onClick = onExit) {
-            Text("退出")
+            Text("返回")
         }
     }
 }

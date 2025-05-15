@@ -2,6 +2,7 @@ package top.ntutn.match
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFontFamilyResolver
@@ -18,6 +20,7 @@ import androidx.compose.ui.text.platform.Font
 import androidx.compose.ui.window.ComposeViewport
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.browser.document
+import kotlinx.browser.window
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getFontResourceBytes
 import org.jetbrains.compose.resources.rememberResourceEnvironment
@@ -44,8 +47,10 @@ fun main() {
             }
 
             if (fontsLoaded) {
-                Box(modifier = Modifier.aspectRatio(0.618f)) {
-                    App()
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.aspectRatio(0.618f)) {
+                        App()
+                    }
                 }
             } else {
                 Text("Loading Fonts...")
@@ -65,12 +70,16 @@ fun App() {
             onAbout = {
                 currentScreen = GameScreen.ABOUT
             },
-            onExit = {}
+            onExit = {
+                window.close()
+            }
         )
 
         GameScreen.GAME_PLAYING -> {
             val gameViewModel = viewModel { GameViewModel() }
-            GamePlayingScene(gameViewModel = gameViewModel, exitApplication = {})
+            GamePlayingScene(gameViewModel = gameViewModel, exitApplication = {
+                currentScreen = GameScreen.MENU
+            })
         }
         GameScreen.ABOUT -> AboutScreen {
             currentScreen = GameScreen.MENU
