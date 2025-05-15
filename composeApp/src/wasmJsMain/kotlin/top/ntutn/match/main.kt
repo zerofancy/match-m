@@ -22,6 +22,7 @@ import kotlinx.browser.document
 import kotlinx.browser.window
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.getFontResourceBytes
+import org.jetbrains.compose.resources.preloadImageBitmap
 import org.jetbrains.compose.resources.rememberResourceEnvironment
 import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
@@ -29,6 +30,7 @@ import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
 import top.ntutn.match.ui.theme.ZMatchTheme
 import zmatch.composeapp.generated.resources.Res
+import zmatch.composeapp.generated.resources.allDrawableResources
 import zmatch.composeapp.generated.resources.resource_han_rounded_cn_medium
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalResourceApi::class)
@@ -54,6 +56,11 @@ fun main() {
                 }
             } else {
                 Text("Loading Fonts...")
+            }
+
+            Res.allDrawableResources.values.forEach {
+                // preload resources
+                preloadImageBitmap(it)
             }
         }
     }
