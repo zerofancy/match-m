@@ -2,6 +2,7 @@ package top.ntutn.match
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -47,15 +48,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-    }
-
-
-    @SuppressLint("MissingSuperCall")
-    override fun onBackPressed() {
-        if (gameViewModel.gameState.value == IViewModel.GameState.RUNNING) {
-            gameViewModel.pause()
-        } else {
-            super.onBackPressed()
-        }
+        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (gameViewModel.gameState.value == IViewModel.GameState.RUNNING) {
+                    gameViewModel.pause()
+                }
+                // todo 弹出导航栈
+            }
+        })
     }
 }
