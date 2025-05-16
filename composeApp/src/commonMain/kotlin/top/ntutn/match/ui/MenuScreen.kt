@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
-import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,7 +28,7 @@ fun MenuScreen(
         val modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
         Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
             Image(painterResource(Res.drawable.ic_match), null)
-            Text("连连看游戏", style = MaterialTheme.typography.h1)
+            Text("连连看游戏", style = MaterialTheme.typography.headlineLarge)
         }
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = onStart, modifier = modifier) {

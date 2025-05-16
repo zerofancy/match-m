@@ -3,9 +3,9 @@ package top.ntutn.match.ui
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -49,9 +49,9 @@ fun TimerArea(time: Int = 0) {
     Text(
         modifier = Modifier.fillMaxWidth(),
         text = time.toString(),
-        style = MaterialTheme.typography.h2,
+        style = MaterialTheme.typography.headlineMedium,
         textAlign = TextAlign.Center,
-        color = if (time > 5) MaterialTheme.colors.primary else MaterialTheme.colors.error
+        color = if (time > 5) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
     )
 }
 

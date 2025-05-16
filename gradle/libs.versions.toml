@@ -10,6 +10,7 @@ kotlin = "2.1.20"
 kotlinx-coroutines = "1.10.2"
 lifecycleViewmodelCompose = "2.8.2"
 logbackClassic = "1.5.18"
+materialKolor = "3.0.0-beta01"
 napier = "2.7.1"
 slf4jApi = "2.0.17"
 buildconfig = "5.6.2"
@@ -23,6 +24,7 @@ androidx-lifecycle-runtime-compose = { group = "org.jetbrains.androidx.lifecycle
 kotlinx-coroutines-swing = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
 lifecycle-viewmodel-compose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassic" }
+material-kolor = { module = "com.materialkolor:material-kolor", version.ref = "materialKolor" }
 napier = { module = "io.github.aakira:napier", version.ref = "napier" }
 slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4jApi" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
