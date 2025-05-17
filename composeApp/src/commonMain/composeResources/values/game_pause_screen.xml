@@ -1,0 +1,5 @@
+<resources>
+    <string name="game_pause_tip">游戏已经暂停</string>
+    <string name="game_pause_continue_button">继续</string>
+    <string name="game_pause_exit_button">退出</string>
+</resources>

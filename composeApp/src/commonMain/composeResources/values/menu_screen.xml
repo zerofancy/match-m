@@ -1,0 +1,6 @@
+<resources>
+    <string name="menu_screen_title">连连看</string>
+    <string name="menu_screen_start">开始</string>
+    <string name="menu_screen_about">关于</string>
+    <string name="menu_screen_exit">退出</string>
+</resources>

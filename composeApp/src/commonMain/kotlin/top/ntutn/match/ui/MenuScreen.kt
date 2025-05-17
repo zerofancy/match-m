@@ -14,8 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import zmatch.composeapp.generated.resources.Res
 import zmatch.composeapp.generated.resources.ic_match
+import zmatch.composeapp.generated.resources.menu_screen_about
+import zmatch.composeapp.generated.resources.menu_screen_exit
+import zmatch.composeapp.generated.resources.menu_screen_start
+import zmatch.composeapp.generated.resources.menu_screen_title
 
 @Composable
 fun MenuScreen(
@@ -28,17 +33,17 @@ fun MenuScreen(
         val modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
         Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
             Image(painterResource(Res.drawable.ic_match), null)
-            Text("连连看游戏", style = MaterialTheme.typography.headlineLarge)
+            Text(stringResource(Res.string.menu_screen_title), style = MaterialTheme.typography.headlineLarge)
         }
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = onStart, modifier = modifier) {
-            Text("开始")
+            Text(stringResource(Res.string.menu_screen_start))
         }
         Button(onClick = onAbout, modifier = modifier) {
-            Text("关于")
+            Text(stringResource(Res.string.menu_screen_about))
         }
         Button(onClick = onExit, modifier = modifier) {
-            Text("退出")
+            Text(stringResource(Res.string.menu_screen_exit))
         }
     }
 }
