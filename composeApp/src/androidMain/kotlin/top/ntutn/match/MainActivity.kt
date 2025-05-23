@@ -1,11 +1,11 @@
 package top.ntutn.match
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -14,6 +14,7 @@ import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
 import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
+import top.ntutn.match.ui.SettingScreen
 import top.ntutn.match.ui.theme.ZMatchTheme
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,9 @@ class MainActivity : AppCompatActivity() {
                     GameScreen.MENU -> MenuScreen(
                         onStart = {
                             currentScreen = GameScreen.GAME_PLAYING
+                        },
+                        onSetting = {
+                            currentScreen = GameScreen.SETTING
                         },
                         onAbout = {
                             currentScreen = GameScreen.ABOUT
@@ -44,6 +48,13 @@ class MainActivity : AppCompatActivity() {
 
                     GameScreen.ABOUT -> AboutScreen {
                         currentScreen = GameScreen.MENU
+                    }
+
+                    GameScreen.SETTING -> {
+                        val difficulty by gameViewModel.difficulty.collectAsState()
+                        SettingScreen(difficulty, onDifficultyChange = gameViewModel::updateDifficulty) {
+                            currentScreen = GameScreen.MENU
+                        }
                     }
                 }
             }

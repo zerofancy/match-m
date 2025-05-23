@@ -120,6 +120,7 @@ compose.desktop {
             windows {
                 menuGroup = "ntutn"
                 upgradeUuid = "be04cbab-20b1-49b7-a706-797423b5f987"
+                iconFile.set(project.file("icon.ico"))
             }
             linux {
                 debMaintainer = "ntutn.top@gmail.com"

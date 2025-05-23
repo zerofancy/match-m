@@ -1,6 +1,7 @@
 package top.ntutn.match
 
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,6 +16,7 @@ import top.ntutn.match.ui.AboutScreen
 import top.ntutn.match.ui.GamePlayingScene
 import top.ntutn.match.ui.GameScreen
 import top.ntutn.match.ui.MenuScreen
+import top.ntutn.match.ui.SettingScreen
 import top.ntutn.match.ui.theme.ZMatchTheme
 import java.awt.EventQueue
 import javax.swing.JOptionPane
@@ -40,10 +42,14 @@ fun main() = application {
     ) {
         ZMatchTheme {
             var currentScreen by remember { mutableStateOf(GameScreen.MENU) }
+            val gameViewModel = viewModel { GameViewModel() }
             when (currentScreen) {
                 GameScreen.MENU -> MenuScreen(
                     onStart = {
                         currentScreen = GameScreen.GAME_PLAYING
+                    },
+                    onSetting = {
+                        currentScreen = GameScreen.SETTING
                     },
                     onAbout = {
                         currentScreen = GameScreen.ABOUT
@@ -51,8 +57,14 @@ fun main() = application {
                     onExit = exitQuery
                 )
 
+                GameScreen.SETTING -> {
+                    val difficulty by gameViewModel.difficulty.collectAsState()
+                    SettingScreen(difficulty, onDifficultyChange = gameViewModel::updateDifficulty, onBack = {
+                        currentScreen = GameScreen.MENU
+                    })
+                }
+
                 GameScreen.GAME_PLAYING -> {
-                    val gameViewModel = viewModel { GameViewModel() }
                     LaunchedEffect(exitConfirming) {
                         if (exitConfirming) {
                             gameViewModel.pause()

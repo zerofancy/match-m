@@ -2,8 +2,10 @@ package top.ntutn.match
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import top.ntutn.match.ui.Difficulty
 
 interface IViewModel {
+    val difficulty: StateFlow<Difficulty>
     val mahjongArea: StateFlow<Array<Array<MutableStateFlow<MahjongType>>>>
     val gameState: StateFlow<GameState>
     val gameTime: StateFlow<Int>
@@ -13,8 +15,6 @@ interface IViewModel {
         rows: Int,
         cols: Int,
         itemCount: Int,
-        maxGameTime: Int,
-        stepGameTime: Int,
         selectableItemCount: Int = 0
     )
 
@@ -23,6 +23,7 @@ interface IViewModel {
     fun resume()
     fun timeTick()
     fun itemClick(row: Int, col: Int)
+    fun updateDifficulty(difficulty: Difficulty)
 
     enum class GameState {
         PENDING,

@@ -1,0 +1,9 @@
+<resources>
+    <string name="setting_screen_exit">返回</string>
+    <string-array name="setting_screen_options">
+        <item>简单</item>
+        <item>普通</item>
+        <item>困难</item>
+    </string-array>
+    <string name="setting_screen_title">难度选择</string>
+</resources>

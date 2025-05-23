@@ -3,8 +3,12 @@ package top.ntutn.match
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import top.ntutn.match.ui.Difficulty
 
 class GameViewModel : IViewModel, ViewModel() {
+    private val _difficulty = MutableStateFlow(Difficulty.EASY)
+    override val difficulty: StateFlow<Difficulty>
+        get() = _difficulty
     private val _mahjongArea = MutableStateFlow(
         arrayOf(
             arrayOf(
@@ -36,7 +40,7 @@ class GameViewModel : IViewModel, ViewModel() {
     private var maxGameTime = 10
     private var stepGameTime = 3
     private var selectableItemCount = 0
-    private val _gameTime = MutableStateFlow(10)
+    private val _gameTime = MutableStateFlow(maxGameTime)
     override val gameTime: StateFlow<Int>
         get() = _gameTime
 
@@ -46,6 +50,18 @@ class GameViewModel : IViewModel, ViewModel() {
     private val _cols = MutableStateFlow(0)
     override val cols: StateFlow<Int>
         get() = _cols
+
+    override fun updateDifficulty(difficulty: Difficulty) {
+        _difficulty.value = difficulty
+        when(difficulty) {
+            Difficulty.EASY -> 60 to 60
+            Difficulty.MEDIUM -> 30 to 30
+            Difficulty.HARD -> 30 to 10
+        }.also { (max, step) ->
+            maxGameTime = max
+            stepGameTime = step
+        }
+    }
 
     /**
      * 初始化游戏
@@ -57,8 +73,6 @@ class GameViewModel : IViewModel, ViewModel() {
         rows: Int,
         cols: Int,
         itemCount: Int,
-        maxGameTime: Int,
-        stepGameTime: Int,
         selectableItemCount: Int
     ) {
         require(rows * cols % 2 == 0) { "区域应该有偶数个元素" }
@@ -81,13 +95,11 @@ class GameViewModel : IViewModel, ViewModel() {
         }
 
         this.selectableItemCount = selectableItemCount
-        this.maxGameTime = maxGameTime
-        this.stepGameTime = stepGameTime
 
         _rows.value = rows
         _cols.value = cols
 
-        val totalItemCollection = 0 until selectableItemCount
+        val totalItemCollection = 0 until itemCount
         val res = mutableListOf<MahjongType>()
         while (res.size < rows * cols) {
             val item = MahjongType(id = totalItemCollection.random())
@@ -101,6 +113,7 @@ class GameViewModel : IViewModel, ViewModel() {
         }
         selectedIndex = null
         _gameState.value = IViewModel.GameState.PENDING
+        updateDifficulty(_difficulty.value)
     }
 
 

@@ -20,12 +20,6 @@ private const val N = 10
 // 最多使用的麻将的种类，越多游戏就越难
 private const val mahjongSize = 15
 
-// 最大倒计时时间，单位秒
-private const val maxGameTime = 15
-
-// 每完成一次增加的游戏时间
-private const val stepGameTime = 3
-
 @Composable
 fun GamePlayingScene(
     modifier: Modifier = Modifier,
@@ -39,8 +33,6 @@ fun GamePlayingScene(
             N,
             N,
             mahjongSize,
-            maxGameTime,
-            stepGameTime,
             MahjongRes.front.size
         )
         gameViewModel.start()

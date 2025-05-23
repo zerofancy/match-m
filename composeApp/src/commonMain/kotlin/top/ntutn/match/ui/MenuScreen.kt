@@ -19,18 +19,20 @@ import zmatch.composeapp.generated.resources.Res
 import zmatch.composeapp.generated.resources.ic_match
 import zmatch.composeapp.generated.resources.menu_screen_about
 import zmatch.composeapp.generated.resources.menu_screen_exit
+import zmatch.composeapp.generated.resources.menu_screen_setting
 import zmatch.composeapp.generated.resources.menu_screen_start
 import zmatch.composeapp.generated.resources.menu_screen_title
 
 @Composable
 fun MenuScreen(
-    modifier: Modifier = Modifier.Companion.fillMaxSize(),
+    modifier: Modifier = Modifier.fillMaxSize(),
     onStart: () -> Unit = {},
+    onSetting: () -> Unit = {},
     onAbout: () -> Unit = {},
     onExit: () -> Unit = {},
 ) {
     Column(modifier = modifier) {
-        val modifier = Modifier.Companion.align(Alignment.Companion.CenterHorizontally)
+        val modifier = Modifier.align(Alignment.CenterHorizontally)
         Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
             Image(painterResource(Res.drawable.ic_match), null)
             Text(stringResource(Res.string.menu_screen_title), style = MaterialTheme.typography.headlineLarge)
@@ -38,6 +40,9 @@ fun MenuScreen(
         Spacer(modifier = Modifier.height(32.dp))
         Button(onClick = onStart, modifier = modifier) {
             Text(stringResource(Res.string.menu_screen_start))
+        }
+        Button(onClick = onSetting, modifier = modifier) {
+            Text(stringResource(Res.string.menu_screen_setting))
         }
         Button(onClick = onAbout, modifier = modifier) {
             Text(stringResource(Res.string.menu_screen_about))
