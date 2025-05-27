@@ -48,6 +48,7 @@ fun main() {
                 val fontFamily = FontFamily(listOf(Font("ResourceHanRounded", cjkFontBytes)))
                 fontFamilyResolver.preload(fontFamily)
                 fontsLoaded = true
+                hideNotice()
             }
 
             if (fontsLoaded) {
@@ -56,16 +57,19 @@ fun main() {
                         App()
                     }
                 }
-            } else {
-                Text("Loading Fonts...")
-            }
-
-            Res.allDrawableResources.values.forEach {
-                // preload resources
-                preloadImageBitmap(it)
+                Res.allDrawableResources.values.forEach {
+                    // preload resources
+                    preloadImageBitmap(it)
+                }
             }
         }
     }
+}
+
+private fun hideNotice() {
+    js("""
+        document.getElementById('loading-notice').style.display = 'none';
+    """)
 }
 
 @Composable
