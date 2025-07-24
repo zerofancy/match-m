@@ -3,7 +3,7 @@ package top.ntutn.match.ui.theme
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -20,17 +20,17 @@ object MTT {
      */
     @Composable
     fun primaryButtonColors(): ButtonColors = ButtonDefaults.buttonColors(
-        backgroundColor = Color(0xff009688),
+        containerColor = Color(0xff009688),
         contentColor = Color.White,
-        disabledBackgroundColor = Color(0xff59BAB1),
+        disabledContainerColor = Color(0xff59BAB1),
         disabledContentColor = Color(0xffFFF8E1)
     )
 
     @Composable
     fun secondaryButtonColors(): ButtonColors = ButtonDefaults.buttonColors(
-        backgroundColor = Color(0xff6C757D),
+        containerColor = Color(0xff6C757D),
         contentColor = Color.White,
-        disabledBackgroundColor = Color(0xff9FA5AA),
+        disabledContainerColor = Color(0xff9FA5AA),
         disabledContentColor = Color(0xffFBFFFF)
     )
 
@@ -40,23 +40,23 @@ object MTT {
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-        elevation: ButtonElevation? = ButtonDefaults.elevation(),
+        elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
         shape: Shape = MaterialTheme.shapes.small,
         border: BorderStroke? = null,
         colors: ButtonColors = primaryButtonColors(),
         contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
         content: @Composable RowScope.() -> Unit
     ) = Button(
-        onClick,
-        modifier,
-        enabled,
-        interactionSource,
-        elevation,
-        shape,
-        border,
-        colors,
-        contentPadding,
-        content
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding,
+        content = content
     )
 
     @Composable
@@ -65,23 +65,23 @@ object MTT {
         modifier: Modifier = Modifier,
         enabled: Boolean = true,
         interactionSource: MutableInteractionSource = remember { MutableInteractionSource() },
-        elevation: ButtonElevation? = ButtonDefaults.elevation(),
+        elevation: ButtonElevation? = ButtonDefaults.buttonElevation(),
         shape: Shape = MaterialTheme.shapes.small,
         border: BorderStroke? = null,
         colors: ButtonColors = secondaryButtonColors(),
         contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
         content: @Composable RowScope.() -> Unit
     ) = Button(
-        onClick,
-        modifier,
-        enabled,
-        interactionSource,
-        elevation,
-        shape,
-        border,
-        colors,
-        contentPadding,
-        content
+        onClick = onClick,
+        modifier = modifier,
+        enabled = enabled,
+        interactionSource = interactionSource,
+        elevation = elevation,
+        shape = shape,
+        border = border,
+        colors = colors,
+        contentPadding = contentPadding,
+        content = content
     )
 
     @Composable
@@ -94,28 +94,22 @@ object MTT {
     ) {
         AlertDialog(
             onDismissRequest = onCancel,
+            confirmButton = {
+                PrimaryButton(
+                    onClick = confirmButton.second
+                ) {
+                    Text(text = confirmButton.first)
+                }
+            },
+            dismissButton = {
+                SecondaryButton(
+                    onClick = cancelButton?.second ?: {}
+                ) {
+                    Text(text = cancelButton?.first ?: "")
+                }
+            },
             title = { Text(text = title) },
             text = { Text(text = content) },
-            buttons = {
-                Row(
-                    modifier = Modifier.padding(all = 8.dp).fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    cancelButton?.let {
-                        SecondaryButton(
-                            onClick = it.second
-                        ) {
-                            Text(text = it.first)
-                        }
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    PrimaryButton(
-                        onClick = confirmButton.second
-                    ) {
-                        Text(text = confirmButton.first)
-                    }
-                }
-            }
         )
     }
 }
