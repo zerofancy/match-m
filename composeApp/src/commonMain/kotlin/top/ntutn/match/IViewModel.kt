@@ -11,6 +11,7 @@ interface IViewModel {
     val gameTime: StateFlow<Int>
     val rows: StateFlow<Int>
     val cols: StateFlow<Int>
+    val connectionLine: StateFlow<List<Pair<Int, Int>>?> // 存储需要显示的连线路径点列表
     fun init(
         rows: Int,
         cols: Int,

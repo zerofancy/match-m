@@ -1,8 +1,13 @@
 package top.ntutn.match
 
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.delay
 import top.ntutn.match.ui.Difficulty
 
 class GameViewModel : IViewModel, ViewModel() {
@@ -50,6 +55,18 @@ class GameViewModel : IViewModel, ViewModel() {
     private val _cols = MutableStateFlow(0)
     override val cols: StateFlow<Int>
         get() = _cols
+    private val _connectionLine = MutableStateFlow<List<Pair<Int, Int>>?>(null)
+    override val connectionLine: StateFlow<List<Pair<Int, Int>>?> = _connectionLine
+
+    init {
+        // 监听 connectionLine 变化，当不为 null 时，延迟 500ms 后将其设置为 null
+        _connectionLine.onEach {
+            if (it != null) {
+                delay(500)
+                _connectionLine.value = null
+            }
+        }.launchIn(CoroutineScope(Dispatchers.Main))
+    }
 
     override fun updateDifficulty(difficulty: Difficulty) {
         _difficulty.value = difficulty
@@ -183,7 +200,10 @@ class GameViewModel : IViewModel, ViewModel() {
         val previousSelected = mahjongArea.value[selectedIndex!!.first][selectedIndex!!.second]
         val currentSelected = mahjongArea.value[row][col]
         // 判断是否可消除
-        if (checkIsCanDelete(row to col, selectedIndex!!)) {
+        val path = checkIsCanDelete(row to col, selectedIndex!!)
+        if (path != null) {
+            // 设置连线信息
+            _connectionLine.value = path
             previousSelected.value =
                 previousSelected.value.copy(isSelected = false, isDeleted = true)
             currentSelected.value = currentSelected.value.copy(isDeleted = true)
@@ -201,38 +221,39 @@ class GameViewModel : IViewModel, ViewModel() {
     }
 
     /**
-     * 判断两个元素是否能消除
+     * 判断两个元素是否能消除，并返回连线路径
      */
-    private fun checkIsCanDelete(itemIndex1: Pair<Int, Int>, itemIndex2: Pair<Int, Int>): Boolean {
+    private fun checkIsCanDelete(itemIndex1: Pair<Int, Int>, itemIndex2: Pair<Int, Int>): List<Pair<Int, Int>>? {
         if (itemIndex1 == itemIndex2) {
-            return false
+            return null
         }
         if (mahjongArea.value.getByPair(itemIndex1).value.id != mahjongArea.value.getByPair(itemIndex2).value.id) {
-            return false
+            return null
         }
-        return VisitDirection.entries.any {
+        return VisitDirection.entries.firstNotNullOfOrNull {
             checkIsCanMatch(itemIndex1, itemIndex2, it)
         }
     }
 
     /**
-     * 判断两个在不同位置的相同元素是否能消除
+     * 判断两个在不同位置的相同元素是否能消除，并返回连线路径
      * BFS
      */
     private fun checkIsCanMatch(
         currentPoint: Pair<Int, Int>,
         targetPoint: Pair<Int, Int>,
         visitDirection: VisitDirection,
-        maxRounds: Int = 2
-    ): Boolean {
+        maxRounds: Int = 2,
+        path: List<Pair<Int, Int>> = listOf(currentPoint)
+    ): List<Pair<Int, Int>>? {
         val nextPoints = currentPoint.getNextPoints(visitDirection, targetPoint).filter {
             if (maxRounds > 0) true else it.third == 0
         }
         if (targetPoint in nextPoints.map { it.first }) {
-            return true
+            return path + targetPoint
         }
-        return nextPoints.isNotEmpty() && nextPoints.any {
-            checkIsCanMatch(it.first, targetPoint, it.second, maxRounds - it.third)
+        return nextPoints.firstNotNullOfOrNull {
+            checkIsCanMatch(it.first, targetPoint, it.second, maxRounds - it.third, path + it.first)
         }
     }
 
